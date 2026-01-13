@@ -1,31 +1,139 @@
+/* Base font scaling */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* Focus states */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #4a8fff;
 }
 
+/* Layout */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
+/* Typography */
 body {
-  margin-bottom: 60px;
+
+    font-family: "Inter", "Segoe UI", sans-serif;
+    background: linear-gradient(180deg, #ffffff 0%, #f3f6fa 100%);
+    color: #2d3748;
+    margin-bottom: 60px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Page title */
+h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 1.5rem;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* Navbar */
+.navbar {
+    background: #ffffff;
+    padding: 0.8rem 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: #2f74e0 !important;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #4a5568 !important;
+}
+
+    .nav-link:hover {
+        color: #2f74e0 !important;
+    }
+
+/* Table styling */
+.table {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+    .table thead {
+        background: #eef3ff;
+    }
+
+        .table thead th {
+            font-weight: 600;
+            color: #2d3a55;
+            border-bottom: none;
+        }
+
+    .table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+        .table tbody tr:hover {
+            background: #f7faff;
+        }
+
+/* Links inside table */
+td a {
+    color: #2f74e0;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+    td a:hover {
+        text-decoration: underline;
+    }
+
+/* Buttons */
+.btn-primary,
+a.btn-primary {
+    background-color: #2f74e0;
+    border-color: #2f74e0;
+    border-radius: 8px;
+    padding: 0.45rem 1rem;
+    font-weight: 500;
+}
+
+    .btn-primary:hover,
+    a.btn-primary:hover {
+        background-color: #1f5bbd;
+        border-color: #1f5bbd;
+    }
+
+/* Success alert */
+.alert-success {
+    border-radius: 10px;
+    background-color: #e6ffed;
+    color: #276749;
+    border: 1px solid #c6f6d5;
+}
+
+/* Form styling */
+.form-control {
+    border-radius: 8px;
+}
+
+.form-floating > .form-control::placeholder {
+    color: #a0aec0;
+}
+
+/* Footer spacing fix */
+html {
+    position: relative;
+    min-height: 100%;
 }

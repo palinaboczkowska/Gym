@@ -27,7 +27,33 @@ namespace Gym.Controllers
         // GET: GymClasses
         public async Task<IActionResult> Index()
         {
-            return View(await _context.GymClasses.ToListAsync());
+            var classes = await _context.GymClasses
+                .Include(c => c.AttendingMembers)
+                .Where(c => c.StartTime > DateTime.Now)
+                .ToListAsync();
+
+            return View(classes);
+        }
+
+
+        public async Task<IActionResult> History()
+        {
+            var classes = await _context.GymClasses
+                .Where(c => c.StartTime <= DateTime.Now)
+                .ToListAsync();
+
+            return View(classes);
+        }
+
+        public async Task<IActionResult> Booked()
+        {
+            var userId = _userManager.GetUserId(User);
+
+            var classes = await _context.GymClasses
+                .Where(c => c.AttendingMembers.Any(a => a.ApplicationUserId == userId))
+                .ToListAsync();
+
+            return View(classes);
         }
 
         // GET: GymClasses/Details/5

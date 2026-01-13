@@ -24,3 +24,11 @@ else
     </li>
 }
 </ul>
+@if (SignInManager.IsSignedIn(User))
+{
+    var fullName = User.Claims.FirstOrDefault(c => c.Type == "FullName")?.Value;
+
+    <li class="nav-item">
+        <a class="nav-link text-dark">@fullName</a>
+    </li>
+}

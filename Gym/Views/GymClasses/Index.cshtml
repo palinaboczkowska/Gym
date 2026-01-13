@@ -1,4 +1,8 @@
-﻿@model IEnumerable<Gym.Models.GymClass>
+﻿@using Microsoft.AspNetCore.Identity
+@using Gym.Models
+@inject UserManager<ApplicationUser> UserManager
+
+@model IEnumerable<Gym.Models.GymClass>
 
 @if (TempData["Message"] != null)
 {
@@ -8,10 +12,10 @@
 }
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Upcoming Gym Classes";
 }
 
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 
 @if (User.IsInRole("Admin"))
 {
@@ -23,36 +27,21 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Duration)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
+            <th>@Html.DisplayNameFor(model => model.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.StartTime)</th>
+            <th>@Html.DisplayNameFor(model => model.Duration)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Duration)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
+                <td>@Html.DisplayFor(modelItem => item.Duration)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
                 <td>
                     @* Admin sees Edit/Delete *@
                     @if (User.IsInRole("Admin"))
@@ -66,7 +55,18 @@
                     @* Logged-in users (Admin + User) can Book *@
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <a asp-action="BookingToggle" asp-route-id="@item.Id">Book</a>
+                        var userId = UserManager.GetUserId(User);
+                        var isBooked = item.AttendingMembers?.Any(a => a.ApplicationUserId == userId) ?? false;
+
+                        if (isBooked)
+                        {
+                            <a asp-action="BookingToggle" asp-route-id="@item.Id">Cancel booking</a>
+                        }
+                        else
+                        {
+                            <a asp-action="BookingToggle" asp-route-id="@item.Id">Book</a>
+                        }
+
                         <span> | </span>
                     }
                     else
@@ -78,7 +78,7 @@
                     @* Everyone can see Details *@
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                 </td>
-        </tr>
-}
+            </tr>
+        }
     </tbody>
 </table>
