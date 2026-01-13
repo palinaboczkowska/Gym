@@ -1,22 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Gym.Data;
+using Gym.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Gym.Data;
-using Gym.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gym.Controllers
 {
     public class GymClassesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public GymClassesController(ApplicationDbContext context)
+
+        public GymClassesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: GymClasses
@@ -34,7 +39,10 @@ namespace Gym.Controllers
             }
 
             var gymClass = await _context.GymClasses
+                .Include(g => g.AttendingMembers)
+                .ThenInclude(a => a.ApplicationUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (gymClass == null)
             {
                 return NotFound();
@@ -153,5 +161,48 @@ namespace Gym.Controllers
         {
             return _context.GymClasses.Any(e => e.Id == id);
         }
-    }
+
+        // Toggles booking for the logged-in user
+        [Authorize]
+        public async Task<IActionResult> BookingToggle(int? id)
+            {
+                if (id == null) return NotFound();
+                // Load the gym class including its attending members
+                var gymClass = await _context.GymClasses
+                    .Include(g => g.AttendingMembers)
+                    .FirstOrDefaultAsync(g => g.Id == id);
+
+                if (gymClass == null)
+                    return NotFound();
+
+            // Get the currently logged-in user
+            var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Unauthorized();
+            // Check if the user is already booked for this class
+            var existingBooking = gymClass.AttendingMembers
+                    .FirstOrDefault(x => x.ApplicationUserId == user.Id);
+
+                if (existingBooking == null)
+                {
+                // User is not booked - add booking
+                gymClass.AttendingMembers.Add(new ApplicationUserGymClass
+                    {
+                        ApplicationUserId = user.Id,
+                        GymClassId = gymClass.Id
+                    });
+                TempData["Message"] = "You have booked this class.";
+            }
+            else
+                {
+                // User is already booked - remove booking
+                gymClass.AttendingMembers.Remove(existingBooking);
+                TempData["Message"] = "You have unbooked this class.";
+            }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
 }

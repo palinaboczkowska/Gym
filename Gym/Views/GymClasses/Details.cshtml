@@ -34,6 +34,14 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
+        <h4>Booked members</h4>
+
+        <ul>
+            @foreach (var attendee in Model.AttendingMembers)
+            {
+                <li>@attendee.ApplicationUser.Email</li>
+            }
+        </ul>
     </dl>
 </div>
 <div>
