@@ -39,7 +39,7 @@
         <ul>
             @foreach (var attendee in Model.AttendingMembers)
             {
-                <li>@attendee.ApplicationUser.Email</li>
+                <li>@attendee.ApplicationUser.FullName</li>
             }
         </ul>
     </dl>

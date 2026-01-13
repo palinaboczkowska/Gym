@@ -24,7 +24,9 @@ namespace Gym.Data
                 {
                     UserName = adminEmail,
                     Email = adminEmail,
-                    EmailConfirmed = true
+                    FirstName = "Admin",
+                    LastName = "User",
+                    TimeOfRegistration = DateTime.Now
                 };
 
                 await userManager.CreateAsync(adminUser, "Admin123!");
